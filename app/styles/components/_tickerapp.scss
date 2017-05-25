@@ -1,0 +1,21 @@
+body {
+	background-color: $dark-grey-background;
+}
+
+.tickerapp-body {
+	margin: 4rem 0 2rem;
+	text-align: center;
+	color: $orange-text-accent;
+	font-family: $font-family-sans-serif;
+
+	.children-container {
+		background-color: $medium-grey-background;
+	}
+
+	.page-title {
+		font-family: $font-family-sans-serif;
+	}
+
+	
+
+}

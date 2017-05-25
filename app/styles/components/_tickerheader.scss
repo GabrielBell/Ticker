@@ -1,0 +1,36 @@
+.top-bar, .top-bar ul{
+	background: #303030;
+	
+	.secondary {
+		background: #404040;
+		color: $orange-text-accent;
+	}
+
+	#date-inputs {
+		
+		label {
+			color: $orange-text-accent;
+		}
+		
+
+		input.interval {
+			background-color: $light-grey-background;
+			color: $orange-text-accent;
+			font-size: .725rem;
+			height: 30%;
+			border: 1px solid $orange-text-accent;
+
+			input::-webkit-input-placeholder{
+				color: $orange-text-accent;
+			}
+
+			 
+			
+		}
+
+
+
+		
+	}
+}
+
