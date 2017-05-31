@@ -38,7 +38,8 @@ module.exports = {
         AUTH_DOMAIN: JSON.stringify(process.env.AUTH_DOMAIN),
         API_KEY: JSON.stringify(process.env.API_KEY),
         DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
-        STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET)
+        STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
+        VANTAGE_API_KEY: JSON.stringify(process.env.VANTAGE_API_KEY)
       }
     })
   ],

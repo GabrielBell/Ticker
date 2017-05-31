@@ -1,0 +1,16 @@
+.activeTickersContainer {
+	h3,h4,h6 {
+				font-family: $font-family-sans-serif;
+			}
+	.active-ticker-wrapper {
+		display: flex;
+		
+
+		.activeTicker {
+			width: 20%;
+			border: 1px solid $orange-text-accent;
+			
+		}
+	}
+}
+

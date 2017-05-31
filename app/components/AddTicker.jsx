@@ -1,46 +1,56 @@
 import React from 'react';
 import * as Redux from 'react-redux';
 var actions = require('actions');
+import AddTickerFilteredList from 'AddTickerFilteredList';
 
 export var AddTicker = React.createClass({
-	getInitialState: function(){
+	getInitialState: function(e){
 		return {
-			searchText: '',
-			filteredSymbols: []
-		};
+			invalidCode: false
+		}
 	},
 	handleSubmit: function(e){
 		e.preventDefault();
-		var {dispatch, tickerHash} = this.props;
-		var tickerSymbol = this.refs.tickerSymbolSearch.value.toUpperCase();
-		this.refs.tickerSymbolSearch.value='';
-		//verify ticker symbol and add ticker symbol to state
-		//dispatch(actions.startAddStock(tickerSymbol));
-		// fetch 1Y of data
+		var {dispatch, searchText, filteredSearch, endDate} = this.props;
+		//verify its a valid code
+		if(searchText.length){
+			var found= filteredSearch.find((element) => {
+				return element.symbol === searchText;
+			});
+			if(found) {
+				// add ticker symbol to state
+				dispatch(actions.startAddActiveTicker(found))
+				//dispatch(actions.startAddStock(tickerSymbol));
+				console.log("My cutoff date is: ", endDate.format("MMM Do, YYYY"));
+				// fetch 1Y of data
+			}else {
+				this.setState({invalidCode: true})
+			}
+			
+			
+			dispatch(actions.clearSearch());
+		}
 		
 	},
 	handleInput: function(e){
 		e.preventDefault();
-		var {tickerHash} = this.props;
+		var {dispatch} = this.props;
+		var {invalidCode} = this.state;
+		if(invalidCode){ this.setState({invalidCode: false})}
 		var tickerSymbol = this.refs.tickerSymbolSearch.value.toUpperCase();
-		this.refs.tickerSymbolSearch.value='';
-		console.log(/^([A-Z]+[\.\-]?[A-Z]*)/.test(tickerSymbol));
-		if(tickerSymbol.charAt(0)){
-			var re= new RegExp(tickerSymbol);
-			var allTickers = tickerHash[tickerSymbol.charAt(0)];
-			/*var filteredTickers= allTickers.filter((ticker) => {
-
-			});*/
-
+		if(/^([A-Z]*[\.\-]?[A-Z]*)$/.test(tickerSymbol)){
+			dispatch(actions.startSearchFilter(tickerSymbol));
 		}
-		this.setState({
-			searchText: tickerSymbol
-		});
 	},	
 	render: function(){
-		var {searchText, filteredSymbols} = this.state;
-		var {tickerHash} = this.props;
-		console.log("SearchText set: ", searchText);
+		
+		var {searchText} = this.props;
+		var {invalidCode} = this.state;
+		var renderInvalidMessage = () => {
+			if(invalidCode){
+				return (<div className="invalidCodeMessage">Sorry that code appears to be invalid. Try Again. </div>)
+			}
+		}
 		return(
 			<div className="add-ticker-container">
 				<h6 className="add-ticker-title">Syncs in realtime.</h6>
@@ -55,6 +65,8 @@ export var AddTicker = React.createClass({
 									</div>
 								</div>
 							</form>
+							<div className="invalidMessageWrapper">{renderInvalidMessage()}</div>
+							<AddTickerFilteredList/>
 						</div>
 					</div>
 					
@@ -67,6 +79,9 @@ export var AddTicker = React.createClass({
 export default Redux.connect(
 	(state) => {
 		return {
-			tickerHash: state.tickerHash
+			searchText: state.search.searchText,
+			filteredSearch: state.search.filtered,
+			endDate: state.date.end
+
 		}
 	})(AddTicker);

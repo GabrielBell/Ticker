@@ -12,9 +12,24 @@
 		color: $orange-text-accent;
 	}
 
+	.input-group {
+		margin-bottom: 0;
+	}
+
 	input {
 		box-shadow: none;
-		
+	}
 
+	.invalidCodeMessage {
+		color: $orange-text-accent;
+	}
+
+	.tickerSearchResults {
+		background-color: #fefefe;
+		.searchResult {
+			
+			font-size: .7rem;
+			height: 1.2rem;
+		}
 	}
 }
