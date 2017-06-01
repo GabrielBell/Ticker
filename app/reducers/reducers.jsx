@@ -4,7 +4,9 @@ import moment from 'moment';
 export var historicalDataReducer= (state=[], action) => {
 	switch(action.type){
 		case 'ADD_TICKER_HISTORY':
-			return [...state, action.historicalData]
+			return [...state, action.historicalData];
+		case 'REMOVE_TICKER_HISTORY':
+			return state.filter((item) => { return item.id !== action.id })
 		default:
 			return state
 	}
@@ -20,6 +22,8 @@ export var activeTickersReducer= (state=[], action) => {
 			...state, 
 			action.ticker	
 			];
+		case 'REMOVE_ACTIVE_TICKER':
+			return state.filter((activeTicker) => { return activeTicker.id !== action.tickerId })
 		case 'FETCH_ACTIVE_TICKERS':
 			return [...action.tickers];
 		default:

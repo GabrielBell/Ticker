@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Redux from 'react-redux';
 import TickerHeader from 'TickerHeader';
+import TickerChartContainer from 'TickerChartContainer';
 import TickerChart from 'TickerChart';
 import AddTicker from 'AddTicker';
 import ActiveTickersContainer from 'ActiveTickersContainer';
@@ -23,7 +24,7 @@ export var TickerApp = React.createClass({
 					<div className="column large-centered large-11 children-container">
 						<h6 className="page-title">Stocks</h6>
 						<TickerHeader></TickerHeader>
-						<TickerChart></TickerChart>
+						<TickerChartContainer/>
 						<AddTicker></AddTicker>
 						<ActiveTickersContainer/>
 					</div>

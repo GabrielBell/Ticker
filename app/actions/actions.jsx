@@ -58,6 +58,7 @@ export var setTickerHash = (tickerHash) => {
 	}
 };
 // dispatched on initial load and when a new ticker is added
+// by default it will fetch last 100 days unless you specify non-compact
 export var fetchActiveHistoricalQuotes = (tickers) => {
 	return (dispatch, getState) => {
 		var vantageAPIKey = process.env.VANTAGE_API_KEY;	
@@ -65,14 +66,12 @@ export var fetchActiveHistoricalQuotes = (tickers) => {
 		//you can only request one stock at a time
 		tickers.forEach((ticker) => {
 			var requestUrl=`http://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker.symbol}&apikey=${vantageAPIKey}`;
-			console.log("Fetching historical data for : ", ticker.symbol);
+			//
 			axios.get(requestUrl).then(function (res) {
 				dispatch(setHistoricalData(ticker, res.data["Time Series (Daily)"] ));
 			}, function (res) {
 				console.log("Failed to make API request: ", res);
-			}).catch((e) => {
-				console.log(e);
-			})
+			});
 
 		})
 		//dispatch(setHistoricalData(tickerSymbol));
@@ -81,41 +80,45 @@ export var fetchActiveHistoricalQuotes = (tickers) => {
 }
 
 export var setHistoricalData = (ticker, data) => {
+	var dayPrices= [];
+	//1. open, 2. high, 3. low, 4. close, 5. volume
+	Object.keys(data).forEach((day) => {
+		dayPrices.push({date: day, close: data[day]["4. close"]});
+	});
+	
 	var historicalData= {
 		...ticker,
-		entries: data
+		dayPrices: dayPrices
 	}
-	console.log(ticker.symbol, " Success :", data);
+	
 	return {
 		type: 'ADD_TICKER_HISTORY',
 		historicalData
 	}
 }
 
-export var requestCurrentQuotes = (tickers) => {
-	return (dispatch, getState) => {
-		var tickerSymbols = tickers.map((ticker) => {return `"${ticker.symbol}"`});
-		var tickerStr= tickerSymbols.join(',');
-		//console.log("tickerStr: ", tickerStr);
-		var endDate = getState().date.end.format("YYYY-MM-DD");
-		var startDate = getState().date.end.subtract(1, 'months').format("YYYY-MM-DD");
-		var vantageAPI="HY5M";
-		
-		/*
-		returns JSON of {open, high, low, close, volume} every 60s	
-		http://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=demo
-
-		*/
-
+export var removeHistoricalData = (id) => {
+	return {
+		type: 'REMOVE_TICKER_HISTORY',
+		id
 	}
-} 
+}
 
 
 
 export var startRemoveActiveTicker = (id) => {
 	return (dispatch, getState) => {
-		dispatch(removeActiveSt)
+		dispatch(removeActiveTicker(id));
+		dispatch(removeHistoricalData(id));
+		var activeTickersRef = firebaseRef.child(`activeTickers/${id}`).remove();
 	}
+};
+
+export var removeActiveTicker = (tickerId) => {
+	return {
+		type: 'REMOVE_ACTIVE_TICKER',
+		tickerId
+	};
 }
 
 export var addActiveTicker = (ticker) => {
@@ -129,13 +132,15 @@ export var startAddActiveTicker = (ticker) => {
 	return (dispatch, getState) => {
 		
 		var {symbol, id, name} = ticker;
-		dispatch(fetchActiveHistoricalQuotes(ticker));
-		dispatch(addActiveStockTicker(ticker));
+		var tickers= [];
+		tickers.push(ticker);
+		dispatch(fetchActiveHistoricalQuotes(tickers));
+		dispatch(addActiveTicker(ticker));
 		var activeTickerRef = firebaseRef.child(`activeTickers/${ticker.id}`).set({
 			name: name,
 			symbol: symbol
 		});
-		console.log("Updating firebase activeTickers");
+		
 		//dispatch(addVerifiedSymbol(code));
 	};
 };

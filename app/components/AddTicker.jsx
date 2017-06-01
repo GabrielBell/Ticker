@@ -20,9 +20,8 @@ export var AddTicker = React.createClass({
 			if(found) {
 				// add ticker symbol to state
 				dispatch(actions.startAddActiveTicker(found))
-				//dispatch(actions.startAddStock(tickerSymbol));
-				console.log("My cutoff date is: ", endDate.format("MMM Do, YYYY"));
-				// fetch 1Y of data
+				//console.log("My cutoff date is: ", endDate.format("MMM Do, YYYY"));
+				
 			}else {
 				this.setState({invalidCode: true})
 			}
