@@ -1,32 +1,28 @@
 import React from 'react';
 import * as Redux from 'react-redux';
-import TickerHeader from 'TickerHeader';
 import TickerChartContainer from 'TickerChartContainer';
 import TickerChart from 'TickerChart';
 import AddTicker from 'AddTicker';
-import ActiveTickersContainer from 'ActiveTickersContainer';
+import ActiveTickers from 'ActiveTickers';
 import * as actions from 'actions';
 
 
 export var TickerApp = React.createClass({
-	componentWillMount: function(){
-		var {dispatch} = this.props;
-		dispatch(actions.startFetchTickers());
-		
-	},
-
+	
 	render: function(){
-		var {activeTickers} = this.props;
-		
+		//var {activeTickers} = this.props;
+		/*var renderChart = ()=> {
+			if(activeTickers.length > 0){
+				return <TickerChartContainer/>
+			}
+		}*/
 		return(
 			<div className="tickerapp-body">
 				<div className="row">
-					<div className="column large-centered large-11 children-container">
-						<h6 className="page-title">Stocks</h6>
-						<TickerHeader></TickerHeader>
+					<div className="column large-centered large-12 children-container">
 						<TickerChartContainer/>
 						<AddTicker></AddTicker>
-						<ActiveTickersContainer/>
+						<ActiveTickers/>
 					</div>
 				</div>
 			</div>
@@ -34,9 +30,4 @@ export var TickerApp = React.createClass({
 	}
 });
 
-export default Redux.connect(
-	(state) => {
-		return {
-			activeTickers: state.activeTickers
-		}
-})(TickerApp);
+export default Redux.connect()(TickerApp);

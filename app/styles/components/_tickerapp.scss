@@ -1,5 +1,6 @@
 body {
-	background-color: $dark-grey-background;
+	background: $dark-grey-background;
+	background: linear-gradient(to bottom, #202020 , #303030);
 }
 
 .tickerapp-body {

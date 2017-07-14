@@ -5,7 +5,7 @@ var {Route, Router, IndexRoute, hashHistory} = require('react-router');
 
 var actions = require('actions');
 const store = require('configureStore').configure();
-import TickerApp from 'TickerApp';
+import TickerAppContainer from 'TickerAppContainer';
 
 // Load foundation
 $(document).foundation();
@@ -19,7 +19,7 @@ ReactDOM.render(
   <Provider store= {store}>
   	<Router history={hashHistory}>
   		<Route path="/">
-  			<IndexRoute component={TickerApp}/>
+  			<IndexRoute component={TickerAppContainer}/>
   		</Route>
   	</Router>
   </Provider>,

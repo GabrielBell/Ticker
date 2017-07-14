@@ -1,8 +1,10 @@
 import moment from 'moment';
 
 
-export var historicalDataReducer= (state=[], action) => {
+export var historicalDataReducer= (state=null, action) => {
 	switch(action.type){
+		case 'INITIALIZE_TICKER_HISTORY':
+			return [];
 		case 'ADD_TICKER_HISTORY':
 			return [...state, action.historicalData];
 		case 'REMOVE_TICKER_HISTORY':
@@ -13,9 +15,17 @@ export var historicalDataReducer= (state=[], action) => {
 }
 
 
+export var lastUpdateReducer= (state= null, action) => {
+	switch(action.type){
+		case 'SET_LAST_UPDATED':
+			return action.lastUpdate.valueOf();
+		default:
+			return state;
+	}
+}
 
 
-export var activeTickersReducer= (state=[], action) => {
+export var activeTickersReducer= (state=null, action) => {
 	switch(action.type){
 		case 'ADD_ACTIVE_TICKER':
 			return [

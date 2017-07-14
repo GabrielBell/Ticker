@@ -4,23 +4,6 @@ import * as actions from 'actions';
 import ActiveTickers from 'ActiveTickers';
 
 export class ActiveTickersContainer extends Component {
-	constructor(props) {
-		super(props);
-		
-		this.state ={
-			activeTickerList: props.activeTickers,
-			isLoading: true
-		};
-	}
-
-	// anytime store detects changes this method will be invoked
-	componentWillReceiveProps(nextProps){
-		this.setState({
-			activeTickerList: nextProps.activeTickers,
-			isLoading: false
-		})
-	}
-
 
 
 	render() {

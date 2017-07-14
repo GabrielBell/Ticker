@@ -13,6 +13,7 @@ export var AddTicker = React.createClass({
 		e.preventDefault();
 		var {dispatch, searchText, filteredSearch, endDate} = this.props;
 		//verify its a valid code
+		
 		if(searchText.length){
 			var found= filteredSearch.find((element) => {
 				return element.symbol === searchText;

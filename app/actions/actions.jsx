@@ -1,6 +1,6 @@
 import firebase, {firebaseRef} from 'app/firebase/';
 import axios from 'axios';
-
+import moment from 'moment';
 
 //this is dispatched in TickerApp.componentWillMount
 export var startFetchTickers = () => {
@@ -62,12 +62,18 @@ export var setTickerHash = (tickerHash) => {
 export var fetchActiveHistoricalQuotes = (tickers) => {
 	return (dispatch, getState) => {
 		var vantageAPIKey = process.env.VANTAGE_API_KEY;	
-		
+		//console.log("OH BOY!", getState().historicalData === null);
+		if(getState().historicalData === null){
+			//console.log("Wiping it");
+			dispatch(initializeActiveHistorical());
+		}
 		//you can only request one stock at a time
 		tickers.forEach((ticker) => {
 			var requestUrl=`http://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker.symbol}&apikey=${vantageAPIKey}`;
 			//
 			axios.get(requestUrl).then(function (res) {
+
+				dispatch(setLastUpdated(moment()))
 				dispatch(setHistoricalData(ticker, res.data["Time Series (Daily)"] ));
 			}, function (res) {
 				console.log("Failed to make API request: ", res);
@@ -78,12 +84,25 @@ export var fetchActiveHistoricalQuotes = (tickers) => {
 		
 	}
 }
+export var setLastUpdated = (lastUpdate) => {
+	//console.log("INSIDE ACTION", lastUpdate)
+	return {
+		type: 'SET_LAST_UPDATED',
+		lastUpdate
+	}
+}
+
+export var initializeActiveHistorical = () => {
+	return {
+		type: 'INITIALIZE_TICKER_HISTORY'
+	}
+};
 
 export var setHistoricalData = (ticker, data) => {
 	var dayPrices= [];
 	//1. open, 2. high, 3. low, 4. close, 5. volume
 	Object.keys(data).forEach((day) => {
-		dayPrices.push({date: day, close: data[day]["4. close"]});
+		dayPrices.unshift({date: day, close: data[day]["4. close"]});
 	});
 	
 	var historicalData= {
@@ -127,18 +146,33 @@ export var addActiveTicker = (ticker) => {
 		ticker
 	};
 }
+/*
+
+//
+
+
+*/
 
 export var startAddActiveTicker = (ticker) => {
 	return (dispatch, getState) => {
+		//generate this tickers rgba color value
 		
-		var {symbol, id, name} = ticker;
+			let red= Math.floor(Math.random() * (115)) +105,
+			green= Math.floor(Math.random() * (100)) +120,
+			blue= Math.floor(Math.random() * (100)) +120,
+			alpha= 1;
+		ticker["color"]= `rgba(${red},${green},${blue},${alpha})`;
+
+		var {symbol, id, name, color} = ticker;
 		var tickers= [];
 		tickers.push(ticker);
+
 		dispatch(fetchActiveHistoricalQuotes(tickers));
 		dispatch(addActiveTicker(ticker));
 		var activeTickerRef = firebaseRef.child(`activeTickers/${ticker.id}`).set({
 			name: name,
-			symbol: symbol
+			symbol: symbol,
+			color: color
 		});
 		
 		//dispatch(addVerifiedSymbol(code));

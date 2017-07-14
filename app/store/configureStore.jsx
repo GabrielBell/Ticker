@@ -1,7 +1,7 @@
 import * as redux from 'redux';
 import thunk from 'redux-thunk';
 
-import {historicalDataReducer, dateReducer, tickerHashReducer, searchReducer, activeTickersReducer} from 'reducers';
+import {historicalDataReducer, dateReducer, tickerHashReducer, searchReducer, activeTickersReducer, lastUpdateReducer} from 'reducers';
 
 export var configure = (initialState = {}) => {
 	var reducer = redux.combineReducers({
@@ -9,7 +9,8 @@ export var configure = (initialState = {}) => {
 		tickerHash: tickerHashReducer,
 		search: searchReducer,
 		activeTickers: activeTickersReducer,
-		historicalData: historicalDataReducer
+		historicalData: historicalDataReducer,
+		lastUpdate: lastUpdateReducer
 		
 	});
 
